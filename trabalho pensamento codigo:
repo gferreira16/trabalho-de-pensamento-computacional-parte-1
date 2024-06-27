@@ -1,0 +1,59 @@
+TRABALHO 2 PARTE 1 
+
+import time
+import random
+
+def gerar_vetor(tamanho, valor_maximo):
+    vetor = [random.randint(0, valor_maximo) for _ in range(tamanho)]
+    return vetor
+
+def pesquisa_sequencial(vetor, alvo):
+    for i in range(len(vetor)):
+        if vetor[i] == alvo:
+            return i
+    return -1
+
+def pesquisa_binaria(vetor, alvo):
+    esquerda, direita = 0, len(vetor) - 1
+    while esquerda <= direita:
+        meio = (esquerda + direita) // 2
+        if vetor[meio] == alvo:
+            return meio
+        elif vetor[meio] < alvo:
+            esquerda = meio + 1
+        else:
+            direita = meio - 1
+    return -1
+
+def medir_tempo(funcao, *args):
+    inicio = time.time()
+    resultado = funcao(*args)
+    fim = time.time()
+    return resultado, fim - inicio
+
+def testar_algoritimo_pesquisa():
+    tamanhos = [10, 100, 1000, 5000, 10000, 50000, 100000, 200000, 500000, 1000000]
+    resultados = []
+
+    for tamanho in tamanhos:
+        valor_maximo = tamanho * 10
+        vetor = gerar_vetor(tamanho, valor_maximo)
+        alvo = random.randint(0, valor_maximo)
+
+        resultado_seq, tempo_seq = medir_tempo(pesquisa_sequencial, vetor, alvo)
+
+        vetor.sort()
+        resultado_bin, tempo_bin = medir_tempo(pesquisa_binaria, vetor, alvo)
+        
+        resultados.append((tamanho, tempo_seq, tempo_bin))
+
+    return resultados
+
+def main():
+    resultados = testar_algoritimo_pesquisa()
+
+    print(f"{'Tamanho':<10}{'Tempo Sequencial':<20}{'Tempo Binário':<20}")
+    for tamanho, tempo_sequencial, tempo_binario in resultados:
+        print(f"{tamanho:<10}{tempo_sequencial:<20}{tempo_binario:<20}")
+
+main()
